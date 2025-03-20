@@ -1,7 +1,7 @@
 <?php
 session_start();
-$errorMessage = $_SESSION['error_message'] ?? null;
-unset($_SESSION['error_message']);
+$errorMessage = $_SESSION['error'] ?? ''; // ✅ Récupère l'erreur et évite l'erreur Undefined variable
+unset($_SESSION['error']); 
 ?>
 
 <!DOCTYPE html>
@@ -16,9 +16,9 @@ unset($_SESSION['error_message']);
     <div class="container mt-5">
         <h2 class="text-center">Connexion Administrateur</h2>
 
-        <?php if ($errorMessage): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></div>
-        <?php endif; ?>
+        <?php if (!empty($errorMessage)): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></div>
+<?php endif; ?>
 
         <form action="login_admin_process.php" method="POST">
             <div class="mb-3">

@@ -1,31 +1,22 @@
 <?php
+
+ob_start(); // ✅ Évite les erreurs d'affichage avant redirection
 session_start();
-require_once '../app/models/Administrateur.php';
+require_once '../app/controllers/LoginAdminController.php';
 
-$adminModel = new \App\Models\Administrateur();
+use App\Controllers\LoginAdminController;
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    echo "✅ login_admin_process.php bien exécuté !<br>";
 
-// ✅ Récupérer l'admin depuis la base
-$admin = $adminModel->getByEmail($email);
+    $email = trim($_POST["email"]);
+    $password = trim($_POST["password"]);
 
-// ✅ Vérifier mot de passe
-if ($admin && $admin['mot_de_passe'] === $password) { // ⚠️ Remplace par password_verify si c'est hashé !
+    echo "Email envoyé : $email<br>";
+    echo "Mot de passe envoyé : $password<br>";
 
-    // ✅ Stocker l'admin connecté dans la session
-    $_SESSION['admin'] = [
-        'id' => $admin['id'],
-        'email' => $admin['email']
-    ];
-
-    // ✅ Rediriger vers le dashboard
-    header('Location: dashboard_admin_process.php');
-    exit();
-
-} else {
-    // ❌ Si erreur, message et retour
-    $_SESSION['error'] = "❌ Email ou mot de passe incorrect.";
-    header('Location: login_admin.php');
-    exit();
+    $controller = new LoginAdminController();
+    $controller->login($email, $password);
 }
+exit();
+?>

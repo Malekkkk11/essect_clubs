@@ -41,10 +41,11 @@ class DashboardAdminController {
         $stmt->execute();
         $statsClubs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+
+  
         // ✅ Rendre les stats accessibles à la vue
         extract(['statsClubs' => $statsClubs]);
-        require_once __DIR__ . '/../../public/dashboard_admin_process.php';
-
+        require_once __DIR__ . '/../../public/dashboard_admin.php';
     }
     
 }
