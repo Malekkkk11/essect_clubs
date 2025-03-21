@@ -121,13 +121,61 @@ $prenom = htmlspecialchars($_SESSION['etudiant']['prenom'] ?? 'Etudiant');
     <!-- Mes Demandes -->
     <h3 id="mes-demandes" class="fw-bold mt-5 mb-4">📝 Mes Demandes d'Adhésion</h3>
     <ul class="list-group">
-        <?php foreach ($mesDemandes as $demande): ?>
-            <li class="list-group-item">
-                Club : <?= htmlspecialchars($demande['nom_club']) ?> -
-                Statut : <strong><?= htmlspecialchars($demande['statut']) ?></strong>
-            </li>
-        <?php endforeach; ?>
+    <?php foreach ($mesDemandes as $demande): ?>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            Club : <?= htmlspecialchars($demande['nom_club']) ?> - 
+            Statut : <strong><?= htmlspecialchars($demande['statut']) ?></strong>
+        </div>
+        <?php if ($demande['statut'] === 'en attente'): ?>
+            <div>
+            <button class="btn btn-sm btn-outline-primary ms-3" data-bs-toggle="modal" data-bs-target="#modifierDemandeModal<?= $demande['id'] ?>">✏️ Modifier</button>
+                <a href="supprimer_demande.php?id=<?= $demande['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?')">🗑️ Supprimer</a>
+            </div>
+        <?php endif; ?>
+    </li>
+<?php endforeach; ?>
     </ul>
+    <?php foreach ($mesDemandes as $demande): ?>
+<?php if ($demande['statut'] === 'en attente'): ?>
+<!-- Modal pour modifier la demande -->
+<div class="modal fade" id="modifierDemandeModal<?= $demande['id'] ?>" tabindex="-1" aria-labelledby="modifierDemandeLabel<?= $demande['id'] ?>" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="modifier_demande_process.php" method="POST" enctype="multipart/form-data" class="modal-content">
+        <input type="hidden" name="demande_id" value="<?= $demande['id'] ?>">
+
+        <div class="modal-header">
+            <h5 class="modal-title" id="modifierDemandeLabel<?= $demande['id'] ?>">✏️ Modifier ma demande</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="motivation<?= $demande['id'] ?>" class="form-label">Message de motivation</label>
+                <textarea class="form-control" name="motivation" id="motivation<?= $demande['id'] ?>" rows="3" required><?= htmlspecialchars($demande['message']) ?></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="cv<?= $demande['id'] ?>" class="form-label">Changer le CV (PDF uniquement)</label>
+                <input type="file" class="form-control" name="cv" id="cv<?= $demande['id'] ?>">
+                <small class="text-muted">Laisser vide si vous ne souhaitez pas changer le CV.</small>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+        </div>
+    </form>
+  </div>
+</div>
+<?php endif; ?>
+<?php endforeach; ?>
+<?php if (isset($_GET['message']) && $_GET['message'] === 'modification_ok'): ?>
+    <div class="alert alert-success text-center">
+        ✅ Demande modifiée avec succès.
+    </div>
+<?php endif; ?>
 
 </div>
 
