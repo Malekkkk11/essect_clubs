@@ -40,7 +40,7 @@ $demandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 
 <?php include_once __DIR__ . '/../app/views/navbar_admin.php'; ?>
-<?php include_once __DIR__ . '/../app/views/alert.php'; ?>
+<?php include_once __DIR__ . '/../app/views/alert_admin.php'; ?>
 
 <div class="container mt-5 pt-5">
     <h1 class="mb-4">📋 Gestion des demandes d'adhésion</h1>
@@ -68,16 +68,16 @@ $demandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </p>
 
                     <?php if ($demande['statut'] == 'en attente'): ?>
-                        <form method="POST" action="traitement_demande.php" class="d-inline">
-                            <input type="hidden" name="demande_id" value="<?= $demande['id'] ?>">
-                            <input type="hidden" name="action" value="accepter">
-                            <button type="submit" class="btn btn-success btn-sm">✅ Accepter</button>
-                        </form>
-                        <form method="POST" action="traitement_demande.php" class="d-inline">
-                            <input type="hidden" name="demande_id" value="<?= $demande['id'] ?>">
-                            <input type="hidden" name="action" value="refuser">
-                            <button type="submit" class="btn btn-danger btn-sm">❌ Refuser</button>
-                        </form>
+                        <form action="traitement_demande.php" method="POST" class="d-inline">
+    <input type="hidden" name="demande_id" value="<?= $demande['id'] ?>">
+    <button type="submit" name="action" value="accepter" class="btn btn-success btn-sm">✅ Accepter</button>
+</form>
+
+<form action="traitement_demande.php" method="POST" class="d-inline">
+    <input type="hidden" name="demande_id" value="<?= $demande['id'] ?>">
+    <button type="submit" name="action" value="refuser" class="btn btn-danger btn-sm">❌ Refuser</button>
+</form>
+
                     <?php else: ?>
                         <p><em>Déjà traité.</em></p>
                     <?php endif; ?>

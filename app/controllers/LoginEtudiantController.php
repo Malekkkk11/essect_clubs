@@ -9,14 +9,28 @@ class LoginEtudiantController {
         $etudiant = $etudiantModel->getByEmail($email);
 
         if ($etudiant && $password == $etudiant['mot_de_passe']) {
-            // La connexion est réussie, démarrer la session
+            session_start();
+            session_regenerate_id(true); // 🔥 Sécurise la session
+            
             session_start();
             $_SESSION['etudiant_id'] = $etudiant['id'];
-            header('Location: dashboard_etudiant_process.php');
-            exit();
+            $_SESSION['etudiant'] = [
+                'id' => $etudiant['id'],
+                'prenom' => $etudiant['prenom'],
+                'email' => $etudiant['email']
+            ];
+            
+            echo "✅ Avant redirection :";
+print_r($_SESSION);
+exit();
+
+header('Location: dashboard_etudiant_process.php');
+exit();
+            
+            
         } else {
-            // Connexion échouée
-            echo "Email ou mot de passe incorrect.";
+            echo "❌ Email ou mot de passe incorrect.";
         }
+        
     }
 }
